@@ -278,9 +278,9 @@ if("Invitado"==doc.data().ROL_IDS){
         try {
           let ref;
           if (id) {
-            ref = firestore.collection("USUARIO").doc(id);
+            ref = firestore.collection("FRUTA").doc(id);
           } else {
-            ref = firestore.collection("USUARIO").doc(cue.value);
+            ref = firestore.collection("FRUTA").doc(cue.value);
           }
           if (fileSeleccionado(imagen)) {
             const refStorage = storage.ref(ref.id);
