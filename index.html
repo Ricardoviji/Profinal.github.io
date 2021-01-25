@@ -8,7 +8,7 @@
     <meta http-equiv="Last-Modified" content="0">
     <meta http-equiv="Cache-Control" content="no-cache, mustrevalidate">
     <meta http-equiv="Pragma" content="no-cache">
-    <title>Usuarios</title>
+    <title>Frutas</title>
     <link rel="stylesheet" href="css/estilo.css">
     <script src="/__/firebase/7.8.1/firebase-app.js"></script>
     <script src="/__/firebase/7.8.1/firebase-auth.js"></script>
@@ -16,7 +16,7 @@
     <script src="/__/firebase/7.8.1/firebase-storage.js"></script>
     <script src="/__/firebase/init.js"></script>
     <script src="js/util.js"></script>
- 
+ 	<link rel="stylesheet" href="css/estilo.css">
     <script type="module" src="js/abc.js"></script>
     <script type="module" src="js/checks.js"></script>
     <script type="module" src="js/footer.js"></script>
@@ -24,7 +24,7 @@
   </head>
   <body>
     <script>
-      function muestraFruta(){
+      function muestraUsuario(){
 
         var user = firebase.auth().currentUser;
         let firestore = firebase.firestore();
@@ -33,7 +33,7 @@
         document.getElementById("avatar").src=user.photoURL;
         var userrol=document.getElementById("rol");
 
-        var docRef = firestore.collection("FRUTA").doc(user.email);
+        var docRef = firestore.collection("USUARIO").doc(user.email);
         docRef.get().then(function (doc) {
           if (doc.exists) {
             userrol.innerHTML= "Rol: "+doc.data().ROL_IDS;
@@ -47,37 +47,35 @@
         }
     </script>
     <form action="javascript:guarda()">
-      <div class="frutas">
+      <div class="verdura">
         <img id="avatar"src="" width="50px" style="border-radius: 50%;">
         <p id="correo"></p>
         <p id="rol"></p>
       </div>
-       <button class="btn btn-info" type="button" id="fruta"  onclick="regresa();" >Verduras</button>
+       <button class="btn btn-info" type="button" id="fruta"  onclick="regresa();" >Frutas</button>
       
       <header>
         <br>
         
-        <abc></abc>
-        <h1>Frutas</h1>
+        <herramientas-abc></herramientas-abc>
+        <h1>Verduras</h1>
       </header>
       <!-- Muestra la imagen registrada en el servidor. -->
       <figure id="figure">
-        <img id="img" alt="Imagen de la Fruta" width="200px">
+        <img id="img" alt="Imagen De La Verdura" width="200px">
       </figure>
       <fieldset>
-        <legend>Nombre Fruta</legend>
+        <legend>Nombre De La Verdura</legend>
         <input id="nombre" type="text">
+      </fieldset>
+      <fieldset>
+        <legend>Descripcion De La Verdura</legend>
+        <input id="desc" type="text">
       </fieldset>
       <fieldset>
         <legend>Imagen</legend>
         <input id="imagen" type="file" accept=".png,.jpg,.jpeg,.gif">
       </fieldset>
-      <!-- Maneja una asociación a uno. -->
-      <fieldset>
-        <legend>Descripcion Fruta</legend>
-        <input id="desc" type="text">
-      </fieldset>
-      <!-- Maneja una asociación a muchos. -->
       <ul class="frutas" id="lista">
         <li><progress max="100">Cargando…</progress></li>
       </ul>
@@ -94,8 +92,8 @@
       auth.onAuthStateChanged(
         async usuarioAuth => {
           if (usuarioAuth && usuarioAuth.email) {
-            muestraFrutas()
-            cargaPasatiempos();
+            muestraUsuario()
+            cargaDescripcion();
             agrega();
             muestraLista();
             valida();
@@ -123,7 +121,7 @@
       uid = user.uid;  
       }
       console.log(email);
-      db.collection("FRUTAS")
+      db.collection("USUARIO")
       .get()
       .then(function(querySnapshot) {
           querySnapshot.forEach(function(doc) {
@@ -136,8 +134,8 @@ if("Invitado"==doc.data().ROL_IDS){
 }if("Administrador"==doc.data().ROL_IDS){
   this.innerHTML =  /*html*/
       ` 
-      <a href="#">Verduras</a>`;
-}if("Frutas"==doc.data().ROL_IDS){
+      <a href="#">Descripcion</a>`;
+}if("Usuario"==doc.data().ROL_IDS){
   ocultar();
 }
   
@@ -160,15 +158,15 @@ if("Invitado"==doc.data().ROL_IDS){
 }
       
 
-      function cargaVerduras() {
-        firestore.collection("Verduras").onSnapshot(
+      function cargaDescripcion() {
+        firestore.collection("DESCRIPCION").onSnapshot(
           querySnapshot => {
             // Opción cuando el pasatiempo no está definido.
-            pasatiempo.innerHTML = /* html */
-              `<option value="">-- Sin Pasatiempo --</option>`;
+            descricpcion.innerHTML = /* html */
+              `<option value="">-- Sin Descripcion --</option>`;
             querySnapshot.forEach(doc => {
               const data = doc.data();
-              pasatiempo.innerHTML += /* html */
+              descripcion.innerHTML += /* html */
                 `<option value="${cod(doc.id)}">
                   ${cod(data.PAS_NOMBRE)}
                 </option>`;
@@ -176,32 +174,11 @@ if("Invitado"==doc.data().ROL_IDS){
           },
           e => {
             procesaError(e);
-            cargaPasatiempos();
+            cargaDescripcion();
           }
         );
       }
-      async function cargaRoles() {
-        firestore.collection("ROL").onSnapshot(
-          querySnapshot => {
-            roles.innerHTML = "";
-            querySnapshot.forEach(doc => {
-              roles.innerHTML += /* html */
-                `<br><label>
-                  <input type="checkbox" name="roles" value="${cod(doc.id)}">
-                   <span>
-                    <strong>${cod(doc.id)}</strong><br>
-                    (${cod(doc.data().ROL_DESCR)})
-                  </span>
-                </label>
-                <br>`;
-            });
-          },
-          e => {
-            procesaError(e);
-            cargaRoles();
-          }
-        );
-      }
+      
       function muestraLista() {
         firestore.collection("USUARIO").onSnapshot(
           async querySnapshot => {
@@ -232,7 +209,7 @@ if("Invitado"==doc.data().ROL_IDS){
           ? await firestore.collection("PASATIEMPO").doc(data.PAS_ID).get()
           : null;
         const pasaNombre = (pasaDoc && pasaDoc.exists) ?
-          pasaDoc.data().PAS_NOMBRE : "-- Sin Pasatiempo --";
+          pasaDoc.data().PAS_NOMBRE : "-- Sin Descripcion --";
         // Obtiene lo datos de los id de los roles.
         const rolDocs = (await Promise.all((data.ROL_IDS || [])
           .map(async rolId =>
@@ -263,28 +240,26 @@ if("Invitado"==doc.data().ROL_IDS){
         cue.required = true;
         imagen.required = true;
         id = "";
-        cue.value = "";
+        nombre.value = "";
         imagen.value = "";
-        pasatiempo.value = "";
-        roles.value = [];
-      }
+        descripcion.value = "";
+        }
       async function muestra(selección) {
         try {
           agregar.disabled = false;
           eliminar.disabled = false;
           figure.hidden = false;
-          cue.readOnly = true;
-          cue.required = false;
+          nombre.readOnly = true;
+          nombre.required = false;
           imagen.required = false;
           let doc =
             await firestore.collection("USUARIO").doc(selección).get();
           if (doc.exists) {
             id = doc.id;
             let data = doc.data();
-            cue.value = doc.id;
+            nombre.value = doc.id;
             imagen.value = "";
-            pasatiempo.value = data.PAS_ID || "";
-            roles.value = data.ROL_IDS;
+            descripcion.value = data.PAS_ID || "";
             img.src = await storage.ref(doc.id).getDownloadURL();
           } else {
             alert("El usuario selecionado no está registrado.");
@@ -296,9 +271,8 @@ if("Invitado"==doc.data().ROL_IDS){
       }
       function leeModelo() {
         return {
-          PAS_ID: pasatiempo.value || null,
-          ROL_IDS: roles.value
-        };
+          PAS_ID: descripcion.value || null,
+          };
       }
       async function guarda() {
         try {
@@ -322,7 +296,7 @@ if("Invitado"==doc.data().ROL_IDS){
       async function elimina() {
         try {
           if (confirm("Confirma la eliminación.")) {
-            await firestore.collection("USUARIO").doc(id).delete();
+            await firestore.collection("FRUTA").doc(id).delete();
             storage.ref(id).delete();
             agrega();
           }
@@ -345,3 +319,4 @@ if("Invitado"==doc.data().ROL_IDS){
     </script>
   </body>
 </html>
+
