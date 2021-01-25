@@ -18,7 +18,7 @@
   </head>
   <body>
     <script>
-      function muestraUsuario(){
+      function muestraFruta(){
 
         var user = firebase.auth().currentUser;
         let firestore = firebase.firestore();
@@ -27,7 +27,7 @@
         document.getElementById("avatar").src=user.photoURL;
         var userrol=document.getElementById("rol");
 
-        var docRef = firestore.collection("USUARIO").doc(user.email);
+        var docRef = firestore.collection("FRUTAS").doc(user.email);
         docRef.get().then(function (doc) {
           if (doc.exists) {
             userrol.innerHTML="Rol: "+ doc.data().ROL_IDS;
@@ -40,28 +40,28 @@
         
         }
     </script>
-    <div class="usuario">
+    <div class="Fruta">
           <img id="avatar"src="" width="50px" style="border-radius: 50%;">
           <p id="correo"></p>
           <p id="rol"></p>
     </div>
     
       <form action="javascript:guarda()">
-        <button  type="button" id="usu"  onclick="regresa();" >Frutas y Verduras</button>
+        <button  type="button" id="usu"  onclick="regresa();" >Frutas</button>
         
     <header>
      <br>
-         <herramientas-abc></herramientas-abc>
-         <h1>Pasatiempos</h1>
+         <abc></abc>
+         <h1>Frutas</h1>
     </header>
        <p><input id="nombre" type="text" placeholder="Nombre" required></p>
-       <p><input id="fecha" type="date" required></p>
+       <p><input id="fruta" type="text" placeholder="Fruta" required></p>
        
        <ul id="lista">
          <li><progress max="100">Cargando…</progress></li>
        </ul>
       
-       <mi-footer></mi-footer>
+       <footer></footer>
      </form>
 
     <script>
@@ -76,7 +76,7 @@
         async usuarioAuth => {
           if (usuarioAuth && usuarioAuth.email) {
             usuario = usuarioAuth.email;
-            muestraUsuario();
+            muestraFruta();
             agrega();
             muestraLista();
             valida();
@@ -111,7 +111,7 @@
         eliminar.disabled = true; // Deshabilita el botón "eliminar".
         id = "";
         nombre.value = "";
-        fecha.value="";
+        fruta.value="";
       }
       /** Prepara la forma para modificar el documento que corresponde al
        * id seleccionado en el listado.
@@ -124,12 +124,12 @@
           /* Recupera el documento con el id "selección" en la colección
            * "PASATIEMPO". */
           let doc =
-            await firestore.collection("PASATIEMPO").doc(selección).get();
+            await firestore.collection("FRUTA").doc(selección).get();
           if (doc.exists) {
             id = doc.id;
             let data = doc.data();
             nombre.value = data.PAS_NOMBRE || "";
-            fecha.value=data.FECHA;
+            fruta.value=data.FRUTA;
           } else {
             alert("El pasatiempo selecionado no está registrado.");
             agrega();
@@ -140,16 +140,16 @@
       }
       function leeModelo() {
         return {
-          PAS_NOMBRE: nombre.value.trim(), FECHA: fecha.value
+          PAS_NOMBRE: nombre.value.trim(), FRUTA: fruta.value
         };
       }
       async function guarda() {
         try {
           if (id) {
             // Modifica el registro en la base de datos en base al id.
-            await firestore.collection("PASATIEMPO").doc(id).set(leeModelo());
+            await firestore.collection("FRUTA").doc(id).set(leeModelo());
           } else {
-            await firestore.collection("PASATIEMPO").add(leeModelo());
+            await firestore.collection("FRUTA").add(leeModelo());
           }
           agrega();
         } catch (e) {
@@ -159,7 +159,7 @@
       /** Elimina un registro en la base de datos. */
       async function elimina() {
         try {
-          await firestore.collection("PASATIEMPO").doc(id).delete();
+          await firestore.collection("FRUTA").doc(id).delete();
           agrega();
         } catch (e) {
           procesaError(e);
@@ -202,7 +202,7 @@
       // SE VALIDA SI ES UN USUARIO
       if(aux3==doc.data().ROL_IDS){
 
-      location.href="usuarios.html";    
+      location.href="verduras.html";    
       // SE VALIDA SI ES UN USUARIO
                     } if(aux2==doc.data().ROL_IDS){
               ocultar();
@@ -220,16 +220,13 @@
       elemento.style.display = 'none';
     } 
     function regresa(){
-      location.href="usuarios.html";
+      location.href="verduras.html";
     }
 
     function procesaError(e) {
       console.log(e);
       alert(e.message);
     }
-    </script>
-  </body>
-</html>
       /** Prepara la forma para capturar un pasatiempo nuevo. */
       function agrega() {
         agregar.disabled = true; // Deshabilita el botón "agregar".
@@ -270,9 +267,9 @@
         try {
           if (id) {
             // Modifica el registro en la base de datos en base al id.
-            await firestore.collection("PASATIEMPO").doc(id).set(leeModelo());
+            await firestore.collection("FRUTA").doc(id).set(leeModelo());
           } else {
-            await firestore.collection("PASATIEMPO").add(leeModelo());
+            await firestore.collection("FRUTA").add(leeModelo());
           }
           agrega();
         } catch (e) {
@@ -282,7 +279,7 @@
       /** Elimina un registro en la base de datos. */
       async function elimina() {
         try {
-          await firestore.collection("PASATIEMPO").doc(id).delete();
+          await firestore.collection("FRUTA").doc(id).delete();
           agrega();
         } catch (e) {
           procesaError(e);
