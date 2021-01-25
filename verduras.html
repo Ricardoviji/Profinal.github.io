@@ -17,14 +17,14 @@
     <script src="/__/firebase/init.js"></script>
     <script src="js/util.js"></script>
  
-    <script type="module" src="js/herramientas-abc.js"></script>
-    <script type="module" src="js/mis-checks.js"></script>
-    <script type="module" src="js/mi-footer.js"></script>
+    <script type="module" src="js/abc.js"></script>
+    <script type="module" src="js/checks.js"></script>
+    <script type="module" src="js/footer.js"></script>
 
   </head>
   <body>
     <script>
-      function muestraUsuario(){
+      function muestraVerdura(){
 
         var user = firebase.auth().currentUser;
         let firestore = firebase.firestore();
@@ -33,7 +33,7 @@
         document.getElementById("avatar").src=user.photoURL;
         var userrol=document.getElementById("rol");
 
-        var docRef = firestore.collection("USUARIO").doc(user.email);
+        var docRef = firestore.collection("VERDURA").doc(user.email);
         docRef.get().then(function (doc) {
           if (doc.exists) {
             userrol.innerHTML= "Rol: "+doc.data().ROL_IDS;
@@ -52,17 +52,17 @@
         <p id="correo"></p>
         <p id="rol"></p>
       </div>
-       <button class="btn btn-info" type="button" id="pasa"  onclick="regresa();" >Pasatiempo</button>
+       <button class="btn btn-info" type="button" id="verdu"  onclick="regresa();" >Verdura</button>
       
       <header>
         <br>
         
-        <herramientas-abc></herramientas-abc>
-        <h1>Usuarios</h1>
+        <abc></abc>
+        <h1>Verduras</h1>
       </header>
       <!-- Muestra la imagen registrada en el servidor. -->
       <figure id="figure">
-        <img id="img" alt="Imagen del Usuario" width="200px">
+        <img id="img" alt="Imagen de la Verdura" width="200px">
       </figure>
       <fieldset>
         <legend>Cue (email)</legend>
@@ -74,7 +74,7 @@
       </fieldset>
       <!-- Maneja una asociación a uno. -->
       <fieldset>
-        <legend>Pasatiempo</legend>
+        <legend>Verdura</legend>
         <select id="pasatiempo">
           <option>Cargando…</option>
         </select>
